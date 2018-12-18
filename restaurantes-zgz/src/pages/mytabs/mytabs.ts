@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
 
+import { HomePage } from '../home/home';
+import { MapPage } from '../map/map';
+import { SettingsPage } from '../settings/settings';
+
 /**
  * Generated class for the MytabsPage tabs.
  *
@@ -15,9 +19,9 @@ import { IonicPage, NavController } from 'ionic-angular';
 })
 export class MytabsPage {
 
-  homeRoot = 'HomePage'
-  mapRoot = 'MapPage'
-  settingsRoot = 'SettingsPage'
+  homeRoot = HomePage;
+  mapRoot = MapPage;
+  settingsRoot = SettingsPage;
 
 
   constructor(public navCtrl: NavController) {}
