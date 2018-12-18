@@ -15,6 +15,7 @@ import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
 
 import { transform } from 'ol/proj';
+import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
 
 
 @IonicPage()
@@ -26,6 +27,8 @@ export class MapPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
+
+  restaurante: Restaurant[];
 
   iconFeature: Feature;
   iconStyle: Style;
@@ -46,9 +49,9 @@ export class MapPage {
   vectorSourceDraw: VectorSource;
 
   distancia: number = 0;
-  locCasa: number[][] = [];
-  ubicacion: number[][] = [];
-  centro: number[][] = [];
+  locCasa: number[] = [];
+  ubicacion: number[] = [];
+  locRestaurante: number[] = [];
 
   features: Feature[] = [];
 
@@ -56,56 +59,22 @@ export class MapPage {
   coordenadasNumZonasZaragoza: number[][];
   coordenadasNumZonasTeruel: number[][];
 
-  isDibujoActivo: boolean;
-  isMosrZonas: boolean;
-  isCasaActivo: boolean;
+  zoom: number;
 
+  iconoRGenerico: string;
   iconoGMaps: string;
   iconoUbicacion: string;
   iconoCasa: string;
 
   ngOnInit() {
-    this.locCasa = transform([-0.877520, 41.665714], 'EPSG:4326', 'EPSG:3857');
-    this.ubicacion = this.locCasa;
-    this.centro = this.ubicacion;
+
+    this.zoom = 13;
+    //Default pointer position
+    this.locRestaurante = transform([-0.889159, 41.648715], 'EPSG:4326', 'EPSG:3857')
+
     this.iconoGMaps = 'http://www.clker.com/cliparts/J/U/K/G/l/9/google-maps-marker-for-residencelamontagne.svg.hi.png';
     this.iconoUbicacion = 'http://www.inside360.fr/wp-content/uploads/2014/10/home_address-icon.png';
     this.iconoCasa = 'https://cdn1.iconfinder.com/data/icons/real-estate-set-1-3/64/real-estate_1-10-512.png';
-
-    this.isDibujoActivo = false;
-    this.isMosrZonas = false;
-    this.isCasaActivo = false;
-
-    this.vectorSourceDraw = new VectorSource({
-      wrapX: false
-    });
-    this.vectorDraw = new VectorLayer({
-      source: this.vectorSourceDraw
-    })
-
-    this.iconFeature = new Feature({
-      geometry: new Point(this.ubicacion)
-    });
-
-    this.iconStyle = new Style({
-      image: new Icon({
-        anchor: [0.5, 0.5],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        scale: 0.05,
-        src: this.iconoGMaps
-      })
-    });
-
-    this.iconFeature.setStyle(this.iconStyle);
-
-    this.vectorSourceMap = new VectorSource({
-      features: [this.iconFeature]
-    });
-
-    this.vectorLayerMap = new VectorLayer({
-      source: this.vectorSourceMap
-    });
 
     this.tileLayer = new Tile({
       source: new XYZ({
@@ -115,13 +84,50 @@ export class MapPage {
 
     this.map = new Map({
       target: 'map',
-      layers: [this.tileLayer, this.vectorLayerMap],
+      layers: [this.tileLayer],
       view: new View({
-        center: this.centro,
-        zoom: 13
+        center: this.locRestaurante,
+        zoom: this.zoom
       })
     });
+
+    this.restaurante = this.navParams.get('restaurant');
+    if (this.restaurante !== undefined) {
+      this.restaurante.forEach((restaurante: Restaurant) => this.dibujarRestaurante(restaurante));
+    }
   }
+
+  dibujarRestaurante(restaurante: Restaurant) {
+    this.locRestaurante = transform(restaurante.geometry.coordinates, 'EPSG:4326', 'EPSG:3857')
+
+    let view: View = this.map.getView();
+    view.setZoom(16);
+    view.setCenter(this.locRestaurante);
+
+    let estiloPointer = new Style({
+      image: new Icon({
+        anchor: [0.5, 0.7],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        scale: 0.3,
+        src: restaurante.logo
+      })
+    });
+
+    let feature = new Feature({
+      geometry: new Point(this.locRestaurante)
+    });
+
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: [feature]
+      })
+    });
+
+    feature.setStyle(estiloPointer);
+    this.map.addLayer(vectorLayer);
+  }
+
 
   dibujarPunto(coords: number[]) {
 

@@ -10,6 +10,10 @@ import { SettingsPage } from '../pages/settings/settings';
 import { MytabsPage } from '../pages/mytabs/mytabs';
 
 import { MyApp } from './app.component';
+import { RestaurantInfoProviderReq } from '../providers/restaurant-info/restaurantRequest';
+
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -21,6 +25,7 @@ import { MyApp } from './app.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -34,7 +39,8 @@ import { MyApp } from './app.component';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    RestaurantInfoProviderReq
   ]
 })
 export class AppModule {}

@@ -7,12 +7,20 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Restaurantes</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-My Home
+  <ion-card *ngFor="let restaurante of restaurantes" (click)="cargarInfo(restaurante)">
+    <img [src]="restaurante.image" />
+    <ion-card-content>
+      <ion-card-title>
+        {{restaurante.title}}
+      </ion-card-title>
+      <p [innerHtml]=restaurante.description></p>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
