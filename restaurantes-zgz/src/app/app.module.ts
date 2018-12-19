@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { HomePage } from '../pages/home/home';
 import { MapPage } from '../pages/map/map';
 import { SettingsPage } from '../pages/settings/settings';
+import { InfoPage } from '../pages/info/info';
 import { MytabsPage } from '../pages/mytabs/mytabs';
 
 import { MyApp } from './app.component';
@@ -21,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomePage,
     MapPage,
     SettingsPage,
+    InfoPage,
     MytabsPage
   ],
   imports: [
@@ -34,6 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomePage,
     MapPage,
     SettingsPage,
+    InfoPage,
     MytabsPage
   ],
   providers: [

@@ -17,12 +17,21 @@ export class RestaurantInfoProviderReq {
 
   constructor(public http: HttpClient) { }
 
-  getNRestaurant(amount: number):Observable<RestaurantResponse> {
+  getNRestaurant(amount: number): Observable<RestaurantResponse> {
     if ((amount !== null || amount !== undefined) && amount > 0) {
       this.params = `?srsname=wgs84&rows=${amount}`;
     } else {
       this.params = `?srsname=wgs84&rows=50`;
     }
-    return this.http.get<RestaurantResponse>(this.URL+this.params);
+    return this.http.get<RestaurantResponse>(this.URL + this.params);
+  }
+
+  getTenedores(amount: number): Observable<RestaurantResponse> {
+    if ((amount !== null || amount !== undefined)) {
+      this.params = `?srsname=wgs84&tenedores=${amount}`;
+    } else {
+      this.params = `?srsname=wgs84`;
+    }
+    return this.http.get<RestaurantResponse>(this.URL + this.params);
   }
 }

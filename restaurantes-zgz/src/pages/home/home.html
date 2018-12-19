@@ -14,13 +14,65 @@
 
 
 <ion-content padding>
-  <ion-card *ngFor="let restaurante of restaurantes" (click)="cargarInfo(restaurante)">
-    <img [src]="restaurante.image" />
-    <ion-card-content>
-      <ion-card-title>
-        {{restaurante.title}}
-      </ion-card-title>
-      <p [innerHtml]=restaurante.description></p>
-    </ion-card-content>
-  </ion-card>
+
+  <ion-item class="selectorTenedor">
+    <ion-label>Tenedores</ion-label>
+    <ion-select #tenedor (ionChange)="cargarSegunTenedores(tenedor.value)">
+      <ion-option value="0">0</ion-option>
+      <ion-option value="1">1</ion-option>
+      <ion-option value="2">2</ion-option>
+      <ion-option value="3">3</ion-option>
+      <ion-option value="4">4</ion-option>
+      <ion-option value="5">5</ion-option>
+    </ion-select>
+  </ion-item>
+
+  <div class="content" *ngIf="!isRestaurantsVacio">
+    <ion-card *ngFor="let restaurante of restaurantes">
+      <img class="imgHeader" [src]="restaurante.image" />
+      <ion-card-content>
+        <ion-card-title>
+          {{restaurante.title}}
+        </ion-card-title>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-10>
+              <p>{{restaurante.streetAddress}}</p>
+              <p *ngIf="restaurante.tel">
+                <ion-icon name="call"></ion-icon> {{restaurante.tel.tel}}
+              </p>
+            </ion-col>
+
+            <ion-col *ngIf="restaurante.tenedores" col-2 class="tenedorInfo">
+              <p class="tenedores">{{restaurante.tenedores}}
+                <ion-icon name="restaurant"></ion-icon>
+              </p>
+              <!-- <span>
+              <img class="imgTenedor" src="http://www.lafondabenalmadena.es/img/eltenedor_icon.png" alt="">
+            </span> -->
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      <ion-grid class="botones" full padding>
+        <ion-row>
+          <ion-col col-6>
+            <button start ion-button round small (click)="mostrarDatos(restaurante)">
+              Más información
+            </button>
+          </ion-col>
+          <ion-col col-6>
+            <button end ion-button round small (click)="cargarInfo(restaurante)">
+              Mostrar en mapa
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
+
+  <h5 *ngIf="isRestaurantsVacio">
+    No se han encontrado resultados.
+  </h5>
+
 </ion-content>

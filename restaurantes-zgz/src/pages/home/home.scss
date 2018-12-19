@@ -1,3 +1,24 @@
-page-home {
+page-home {}
 
+.botones button {
+  text-transform: none;
+}
+
+.imgHeader {
+  border-radius: 5px;
+}
+
+.imgTenedor {
+  width: 1.1em;
+}
+
+.tenedorInfo,
+.imgTenedor {
+  height: auto;
+  display: inline-flex;
+}
+
+p.tenedores {
+  font-weight: bold;
+  font-size: 1.2em;
 }

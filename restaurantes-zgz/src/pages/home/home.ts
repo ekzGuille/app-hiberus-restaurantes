@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RestaurantInfoProviderReq } from '../../providers/restaurant-info/restaurantRequest';
 import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
 import { MapPage } from '../map/map';
+import { InfoPage } from '../info/info';
 
 
 /**
@@ -23,6 +24,9 @@ export class HomePage {
   urlWebZgz: string;
   imagenRGenerica: string;
   iconoRGenerico: string;
+  iconoTenedor: string;
+  cantidadTenedores: number;
+  isRestaurantsVacio: boolean;
 
   ngOnInit(): void {
     this.cargarRestaurantes(10);
@@ -30,6 +34,8 @@ export class HomePage {
     this.urlWebZgz = 'https://www.zaragoza.es';
     this.imagenRGenerica = 'https://image.freepik.com/foto-gratis/fondo-borroso-difuminar-frente-restaurante-luz-bokeh_7190-925.jpg'
     this.iconoRGenerico = 'https://furtaev.ru/preview/restaurant_map_pointer_small.png';
+    this.iconoTenedor = 'http://www.lafondabenalmadena.es/img/eltenedor_icon.png';
+    this.isRestaurantsVacio = false;
   }
 
 
@@ -37,6 +43,7 @@ export class HomePage {
   }
 
   cargarRestaurantes(amount: number): void {
+    this.restaurantes = [];
     this.restaurantInfoProviderReq.getNRestaurant(amount)
       .subscribe(res => {
         res.result.forEach(restaurante => {
@@ -47,11 +54,35 @@ export class HomePage {
       });
   }
 
+  cargarSegunTenedores(amount: number): void {
+    this.restaurantes = [];
+    this.restaurantInfoProviderReq.getTenedores(amount)
+      .subscribe(res => {
+        if (res.totalCount > 0) {
+          console.log(res);
+          
+          this.isRestaurantsVacio = false;
+          res.result.forEach(restaurante => {
+            restaurante.image = restaurante.image === undefined ? this.imagenRGenerica : this.urlWebZgz + restaurante.image;
+            restaurante.logo = restaurante.logo === undefined ? this.iconoRGenerico : this.urlWebZgz + restaurante.logo;
+            this.restaurantes.push(restaurante)
+          })
+        }else{
+          this.isRestaurantsVacio = true;
+        }
+      });
+  }
+
   cargarInfo(restaurante: Restaurant): void {
     this.navCtrl.push(MapPage, {
       restaurant: [restaurante]
     });
+  }
 
+  mostrarDatos(restaurante: Restaurant): void {
+    this.navCtrl.push(InfoPage, {
+      restaurant: [restaurante]
+    });
   }
 
 }

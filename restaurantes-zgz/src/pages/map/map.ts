@@ -64,6 +64,7 @@ export class MapPage {
   iconoRGenerico: string;
   iconoGMaps: string;
   iconoUbicacion: string;
+  iconoAnimadoUbicacion: string;
   iconoCasa: string;
 
   ngOnInit() {
@@ -74,6 +75,7 @@ export class MapPage {
 
     this.iconoGMaps = 'http://www.clker.com/cliparts/J/U/K/G/l/9/google-maps-marker-for-residencelamontagne.svg.hi.png';
     this.iconoUbicacion = 'http://www.inside360.fr/wp-content/uploads/2014/10/home_address-icon.png';
+    this.iconoAnimadoUbicacion = 'http://www.insoldelbajio.com/wp-content/uploads/2014/05/location-1.gif';
     this.iconoCasa = 'https://cdn1.iconfinder.com/data/icons/real-estate-set-1-3/64/real-estate_1-10-512.png';
 
     this.tileLayer = new Tile({
