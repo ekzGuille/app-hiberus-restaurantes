@@ -17,7 +17,6 @@ export class InfoPage {
   }
   ngOnInit(): void {
     this.restaurante = this.navParams.get('restaurant')[0];
-    console.log(this.restaurante);
   }
 
   mostrarMapa(restaurante: Restaurant): void {

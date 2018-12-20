@@ -7,15 +7,13 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Restaurantes</ion-title>
+    <ion-title>Restaurantes de Zaragoza</ion-title>
   </ion-navbar>
-
 </ion-header>
-
 
 <ion-content padding>
   <ion-item class="selectorTenedor">
-    <ion-label>Tenedores</ion-label>
+    <ion-label>Busca por tenedores</ion-label>
     <ion-select [(ngModel)]="resCondicion.numTenedores" #tenedor (ionChange)="cargarSegunTenedores(tenedor.value)">
       <ion-option value="0">0</ion-option>
       <ion-option value="1">1</ion-option>
@@ -58,9 +56,6 @@
                 <p class="tenedores">{{restaurante.tenedores}}
                   <ion-icon name="restaurant"></ion-icon>
                 </p>
-                <!-- <span>
-              <img class="imgTenedor" src="http://www.lafondabenalmadena.es/img/eltenedor_icon.png" alt="">
-            </span> -->
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -99,9 +94,6 @@
                 <p class="tenedores">{{restaurante.tenedores}}
                   <ion-icon name="restaurant"></ion-icon>
                 </p>
-                <!-- <span>
-              <img class="imgTenedor" src="http://www.lafondabenalmadena.es/img/eltenedor_icon.png" alt="">
-            </span> -->
               </ion-col>
             </ion-row>
           </ion-grid>

@@ -16,7 +16,8 @@ import Style from 'ol/style/Style';
 
 import { transform } from 'ol/proj';
 import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
-
+import { HttpClient } from '@angular/common/http';
+import { Location } from '../../providers/restaurant-info/model/location';
 
 @IonicPage()
 @Component({
@@ -25,7 +26,7 @@ import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
 })
 export class MapPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient) {
   }
 
   restaurante: Restaurant[];
@@ -49,15 +50,10 @@ export class MapPage {
   vectorSourceDraw: VectorSource;
 
   distancia: number = 0;
-  locCasa: number[] = [];
   ubicacion: number[] = [];
   locRestaurante: number[] = [];
 
   features: Feature[] = [];
-
-  zonaNumero: string[];
-  coordenadasNumZonasZaragoza: number[][];
-  coordenadasNumZonasTeruel: number[][];
 
   zoom: number;
 
@@ -129,37 +125,49 @@ export class MapPage {
     feature.setStyle(estiloPointer);
     this.map.addLayer(vectorLayer);
   }
+  dibujarUbicacion(coords: number[]) {
+    let ubcCoords = transform(coords, 'EPSG:4326', 'EPSG:3857');
 
+    let view: View = this.map.getView();
+    view.setZoom(18);
+    view.setCenter(ubcCoords);
 
-  dibujarPunto(coords: number[]) {
-
-    let longitud = coords[0];
-    let latitud = coords[1];
-
-    let iconStyle = new Style({
+    let estiloPointer = new Style({
       image: new Icon({
         anchor: [0.5, 0.7],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         scale: 0.05,
-        src: this.iconoCasa
+        src: this.iconoGMaps
       })
     });
 
-    let iconFeature = new Feature({
-      geometry: new Point(transform([longitud, latitud], 'EPSG:4326', 'EPSG:3857')),
+    let feature = new Feature({
+      geometry: new Point(ubcCoords)
     });
 
-    let vectorPoint = new VectorLayer({
+    let vectorLayer = new VectorLayer({
       source: new VectorSource({
-        features: [iconFeature]
+        features: [feature]
       })
     });
 
-
-    iconFeature.setStyle(iconStyle);
-    this.map.addLayer(vectorPoint);
+    feature.setStyle(estiloPointer);
+    this.map.addLayer(vectorLayer);
   }
 
+  localizarPorAPI() {
+
+
+    this.ubicacion = [];
+    this.http.get<Location>('https://ipapi.co/json')
+      .subscribe(res => {
+        this.ubicacion = [res.longitude, res.latitude];
+        if (this.ubicacion.length > 0) {
+          this.dibujarUbicacion(this.ubicacion);
+        }
+      });
+  }
+  //TODO https://stackoverflow.com/questions/10109620/openlayers-how-to-calculate-distance-between-two-points
 }
 

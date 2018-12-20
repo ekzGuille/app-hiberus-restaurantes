@@ -6,8 +6,8 @@
 -->
 <ion-header>
   <ion-navbar>
-    <ion-title>
-      Map
+    <ion-title *ngIf="restaurante">
+      {{restaurante[0].title}}
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -16,7 +16,7 @@
   <!-- <ion-content padding> -->
   <div id="map" class="map">
   </div>
-  <button class="btnLocalizar" (click)="localizarUsuario">
+  <button round class="btnLocalizar" (click)="localizarPorAPI()">
     <ion-icon name="locate"></ion-icon>
   </button>
 </ion-content>

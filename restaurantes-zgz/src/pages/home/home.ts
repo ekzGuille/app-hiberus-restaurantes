@@ -44,7 +44,6 @@ export class HomePage {
       numTenedores: -1
     };
     this.isHotel = true;
-
   }
 
 
@@ -58,7 +57,7 @@ export class HomePage {
         res.result.forEach(restaurante => {
           restaurante.image = restaurante.image === undefined ? this.imagenRGenerica : this.urlWebZgz + restaurante.image;
           restaurante.logo = restaurante.logo === undefined ? this.iconoRGenerico : this.urlWebZgz + restaurante.logo;
-          this.restaurantes.push(restaurante)
+          this.restaurantes.push(restaurante);
         })
       });
   }
@@ -82,7 +81,6 @@ export class HomePage {
           this.resCondicion = {
             isVacio: true,
             numTenedores: amount
-
           }
         }
       });
