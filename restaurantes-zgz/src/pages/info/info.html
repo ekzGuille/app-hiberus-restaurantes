@@ -14,5 +14,68 @@
 
 
 <ion-content padding>
-  Hola
+  <ion-card>
+    <img class="imgHeader" [src]="restaurante.image" />
+    <ion-card-content>
+      <p class="header">
+        {{restaurante.title}}
+      </p>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="descInfo" *ngIf="restaurante.comment">
+              {{restaurante.comment}}
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-10>
+            <p>{{restaurante.streetAddress}}, {{restaurante.addressLocality}}</p>
+            <div *ngIf="restaurante.tel">
+              <p *ngIf="restaurante.tel.tel">
+                <ion-icon name="call"></ion-icon> {{restaurante.tel.tel}}
+              </p>
+            </div>
+            <!-- TODO Enviar email -->
+            <p *ngIf="restaurante.email">
+              <ion-icon name="mail"></ion-icon> {{restaurante.email}}
+            </p>
+            <p *ngIf="restaurante.url">
+              <ion-icon name="compass"></ion-icon> <a href="{{restaurante.url}}">{{restaurante.url}}
+              </a>
+            </p>
+            <p *ngIf="restaurante.capacidad">
+              Capacidad para <span class="comensales">{{restaurante.capacidad}}</span> comensales.
+            </p>
+          </ion-col>
+
+          <ion-col *ngIf="restaurante.tenedores" col-2 class="tenedorInfo">
+            <p class="tenedores">{{restaurante.tenedores}}
+              <ion-icon name="restaurant"></ion-icon>
+            </p>
+            <!-- <span>
+              <img class="imgTenedor" src="http://www.lafondabenalmadena.es/img/eltenedor_icon.png" alt="">
+            </span> -->
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+    <ion-grid class="botones" full padding>
+      <ion-row>
+        <!-- <ion-col col-6>
+          <button start ion-button round small (click)="mostrarDatos(restaurante)">
+            Más información
+          </button>
+        </ion-col> -->
+        <ion-col col-6 offset-3>
+          <button ion-button icon-only (click)="mostrarMapa(restaurante)">
+            Mostrar en mapa
+          </button>
+          <!-- <button end ion-button round small (click)="mostrarMapa(restaurante)">
+            Mostrar en mapa
+          </button> -->
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
 </ion-content>

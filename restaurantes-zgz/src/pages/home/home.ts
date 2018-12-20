@@ -26,16 +26,25 @@ export class HomePage {
   iconoRGenerico: string;
   iconoTenedor: string;
   cantidadTenedores: number;
-  isRestaurantsVacio: boolean;
+  resCondicion: {
+    isVacio: boolean,
+    numTenedores: number
+  }
+  isHotel: boolean;
 
   ngOnInit(): void {
-    this.cargarRestaurantes(10);
+    this.cargarRestaurantes(100);
     this.restaurantes = [];
     this.urlWebZgz = 'https://www.zaragoza.es';
     this.imagenRGenerica = 'https://image.freepik.com/foto-gratis/fondo-borroso-difuminar-frente-restaurante-luz-bokeh_7190-925.jpg'
     this.iconoRGenerico = 'https://furtaev.ru/preview/restaurant_map_pointer_small.png';
     this.iconoTenedor = 'http://www.lafondabenalmadena.es/img/eltenedor_icon.png';
-    this.isRestaurantsVacio = false;
+    this.resCondicion = {
+      isVacio: false,
+      numTenedores: -1
+    };
+    this.isHotel = true;
+
   }
 
 
@@ -59,21 +68,27 @@ export class HomePage {
     this.restaurantInfoProviderReq.getTenedores(amount)
       .subscribe(res => {
         if (res.totalCount > 0) {
-          console.log(res);
-          
-          this.isRestaurantsVacio = false;
+          this.resCondicion = {
+            isVacio: false,
+            numTenedores: amount
+
+          }
           res.result.forEach(restaurante => {
             restaurante.image = restaurante.image === undefined ? this.imagenRGenerica : this.urlWebZgz + restaurante.image;
             restaurante.logo = restaurante.logo === undefined ? this.iconoRGenerico : this.urlWebZgz + restaurante.logo;
             this.restaurantes.push(restaurante)
           })
-        }else{
-          this.isRestaurantsVacio = true;
+        } else {
+          this.resCondicion = {
+            isVacio: true,
+            numTenedores: amount
+
+          }
         }
       });
   }
 
-  cargarInfo(restaurante: Restaurant): void {
+  mostrarMapa(restaurante: Restaurant): void {
     this.navCtrl.push(MapPage, {
       restaurant: [restaurante]
     });
@@ -84,5 +99,4 @@ export class HomePage {
       restaurant: [restaurante]
     });
   }
-
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
+import { MapPage } from '../map/map';
 
 
 @IonicPage()
@@ -16,6 +17,13 @@ export class InfoPage {
   }
   ngOnInit(): void {
     this.restaurante = this.navParams.get('restaurant')[0];
+    console.log(this.restaurante);
+  }
+
+  mostrarMapa(restaurante: Restaurant): void {
+    this.navCtrl.push(MapPage, {
+      restaurant: [restaurante]
+    });
   }
 
 }
