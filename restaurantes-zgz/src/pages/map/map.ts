@@ -85,6 +85,7 @@ export class MapPage {
       layers: [this.tileLayer],
       view: new View({
         center: this.locRestaurante,
+        minZoom: 10,
         zoom: this.zoom
       })
     });

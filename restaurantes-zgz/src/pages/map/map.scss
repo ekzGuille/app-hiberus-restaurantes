@@ -1,15 +1,12 @@
 page-about {}
 
-ion-content {
-  height: 100vh;
-  widows: 100vw;
+div.ol-viewport{
+  height: auto !important;
 }
 
-#root {
-  height: 100%;
-}
-
-#map {
+div.map {
+  position: relative;
+  overflow: hidden;
   height: 100%;
 }
 
@@ -23,7 +20,7 @@ button.btnLocalizar {
   background: #306BFF;
   bottom: 30px;
   right: 30px;
-  -webkit-box-shadow: 0px 10px 110px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 10px 110px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 10px 110px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.5);
 }

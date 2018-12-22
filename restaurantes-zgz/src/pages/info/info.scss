@@ -13,3 +13,9 @@ div.descInfo {
 span.comensales {
   font-weight: bold;
 }
+
+div.mapContainer{
+  box-sizing: border-box;
+  overflow: hidden;
+  height: 50vh;
+}
