@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-import { MapDistance } from '../map/mapDistance';
+import { MapCal } from './mapCal'
 
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -11,13 +11,11 @@ import View from 'ol/View';
 import Point from 'ol/geom/Point';
 import Tile from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
-import Draw from 'ol/interaction/Draw';
 import VectorSource from 'ol/source/Vector';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
 
-import { boundingExtent } from 'ol/extent';
-import { transform, transformExtent } from 'ol/proj';
+import { transform } from 'ol/proj';
 import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
 import { HttpClient } from '@angular/common/http';
 import { Location } from '../../providers/restaurant-info/model/location';
@@ -34,25 +32,13 @@ export class MapPage {
 
   restaurante: Restaurant[];
 
-  iconFeature: Feature;
-  iconStyle: Style;
   map: Map;
-  mapSource: XYZ;
   overlay: Overlay;
   view: View;
   point: Point;
   tileLayer: Tile;
-  vectorLayerMap: VectorLayer;
-  vectorSourceMap: VectorSource;
-  dibujoUsuario: Draw;
-  layerZonas: VectorLayer;
-  layerCasa: VectorLayer;
-  layerCirculo: VectorLayer;
-  layerAreaSeleccionada: VectorLayer;
-  vectorDraw: VectorLayer;
-  vectorSourceDraw: VectorSource;
 
-  mapDistance: MapDistance;
+  mapDistance: MapCal;
 
   distancia: number = 0;
   ubicacion: number[] = [];
@@ -70,7 +56,7 @@ export class MapPage {
 
   ngOnInit() {
 
-    this.mapDistance = new MapDistance();
+    this.mapDistance = new MapCal();
 
     this.zoom = 13;
     //Default pointer position
@@ -176,24 +162,15 @@ export class MapPage {
           this.dibujarUbicacion(this.ubicacion);
 
           let view = this.map.getView();
-          //TODO (Que haga zoom y que se vean los dos puntos)
-          view.fit(transformExtent(boundingExtent([...this.ubicacion, ...this.locRestaurante]), 'EPSG:4326', 'EPSG:3857'), this.map.getSize());
 
-          // view.setCenter(this.mapDistance.midCoords(this.ubicacion, this.locRestaurante));
-          // let distancia = this.cacularDistancia(this.ubicacion, this.locRestaurante);
-          // console.log(distancia);
-          // if (distancia < 0.5) {
-          //   distancia *= 100;
-          //   this.zoom--;
-          // } else {
-          //   console.log(distancia);
-          //   distancia = ~~distancia;
-          //   this.zoom -= (distancia + 1);
-          //   console.log(distancia);
+          view.setCenter(this.mapDistance.midCoords(this.ubicacion, this.locRestaurante));
+          let distancia = this.cacularDistancia(this.ubicacion, this.locRestaurante);
 
-          // }
+          // console.log('Zoom1: ' + this.zoom);
+          // console.log('Distancia: ' + distancia);
+          this.zoom = this.mapDistance.mapping(distancia, 0, 10, 16, 1);
+          // console.log('Zoom2: ' + this.zoom);
 
-          console.log(this.zoom);
           view.setZoom(this.zoom);
         }
       });
@@ -204,6 +181,5 @@ export class MapPage {
     coords2 = transform(coords2, 'EPSG:3857', 'EPSG:4326');
     return this.mapDistance.distance2Points(coords1, coords2);
   }
-  //TODO https://stackoverflow.com/questions/10109620/openlayers-how-to-calculate-distance-between-two-points
 }
 
