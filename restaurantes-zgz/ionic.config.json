@@ -1,5 +1,7 @@
 {
   "name": "restaurantes-zgz",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }

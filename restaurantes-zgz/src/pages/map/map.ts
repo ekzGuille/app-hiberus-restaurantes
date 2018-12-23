@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Geolocation } from '@ionic-native/geolocation';
+import { ToastController } from 'ionic-angular';
 
 import { MapCal } from './mapCal'
 
@@ -27,7 +29,7 @@ import { Location } from '../../providers/restaurant-info/model/location';
 })
 export class MapPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient, private geolocation: Geolocation, public toastCtrl: ToastController) {
   }
 
   restaurante: Restaurant[];
@@ -43,8 +45,9 @@ export class MapPage {
   distancia: number = 0;
   ubicacion: number[] = [];
   locRestaurante: number[] = [];
+  centroMapa: number[] = [];
 
-  features: Feature[] = [];
+  featuresRestaurante: Feature[] = [];
 
   zoom: number;
 
@@ -60,7 +63,7 @@ export class MapPage {
 
     this.zoom = 13;
     //Default pointer position
-    this.locRestaurante = transform([-0.889159, 41.648715], 'EPSG:4326', 'EPSG:3857')
+    this.centroMapa = transform([-0.889159, 41.648715], 'EPSG:4326', 'EPSG:3857')
 
     this.iconoGMaps = 'http://www.clker.com/cliparts/J/U/K/G/l/9/google-maps-marker-for-residencelamontagne.svg.hi.png';
     this.iconoUbicacion = 'http://www.inside360.fr/wp-content/uploads/2014/10/home_address-icon.png';
@@ -77,7 +80,7 @@ export class MapPage {
       target: 'map',
       layers: [this.tileLayer],
       view: new View({
-        center: this.locRestaurante,
+        center: this.centroMapa,
         minZoom: 10,
         zoom: this.zoom
       })
@@ -85,7 +88,10 @@ export class MapPage {
 
     this.restaurante = this.navParams.get('restaurant');
     if (this.restaurante !== undefined) {
-      this.restaurante.forEach((restaurante: Restaurant) => this.dibujarRestaurante(restaurante));
+      this.featuresRestaurante = [];
+      this.restaurante.forEach((restaurante: Restaurant) => {
+        this.dibujarRestaurante(restaurante);
+      });
     }
   }
 
@@ -152,28 +158,48 @@ export class MapPage {
     this.map.addLayer(vectorLayer);
   }
 
-  localizarPorIP(): void {
-    this.ubicacion = [];
-    this.http.get<Location>('https://ipapi.co/json')
-      .subscribe(res => {
-        this.ubicacion = [res.longitude, res.latitude];
-        if (this.ubicacion.length > 0) {
-          this.ubicacion = transform(this.ubicacion, 'EPSG:4326', 'EPSG:3857');
-          this.dibujarUbicacion(this.ubicacion);
+  actualizarMapa(): void {
+    if (this.ubicacion.length > 0) {
+      this.ubicacion = transform(this.ubicacion, 'EPSG:4326', 'EPSG:3857');
+      this.dibujarUbicacion(this.ubicacion);
 
-          let view = this.map.getView();
+      let view = this.map.getView();
 
-          view.setCenter(this.mapDistance.midCoords(this.ubicacion, this.locRestaurante));
-          let distancia = this.cacularDistancia(this.ubicacion, this.locRestaurante);
+      if (this.locRestaurante.length > 0) {
+        view.setCenter(this.mapDistance.midCoords(this.ubicacion, this.locRestaurante));
+        let distancia = this.cacularDistancia(this.ubicacion, this.locRestaurante);
+        this.zoom = this.mapDistance.mapping(distancia, 0, 10, 16, 1);
+      } else {
+        this.zoom = 16;
+      }
+      view.setZoom(this.zoom);
+    }
+  }
 
-          // console.log('Zoom1: ' + this.zoom);
-          // console.log('Distancia: ' + distancia);
-          this.zoom = this.mapDistance.mapping(distancia, 0, 10, 16, 1);
-          // console.log('Zoom2: ' + this.zoom);
+  localizarUsuario(): void {
+    if(this.ubicacion.length === 0){
+      this.mostrarToast();
+    }
+    this.geolocation.getCurrentPosition().then((res) => {
+      this.ubicacion = [res.coords.longitude, res.coords.latitude];
+      this.actualizarMapa();
+    }).catch((error) => {
+      //Localizar por IP
+      this.http.get<Location>('https://ipapi.co/json')
+        .subscribe(res => {
+          this.ubicacion = [res.longitude, res.latitude];
+          this.actualizarMapa();
+        });
+    });
+  }
 
-          view.setZoom(this.zoom);
-        }
-      });
+  mostrarToast():void{
+    const toast = this.toastCtrl.create({
+      message: 'Obteniendo ubicación',
+      duration: 1500,
+      position: 'top'
+    });
+    toast.present();
   }
 
   cacularDistancia(coords1: number[], coords2: number[]): number {

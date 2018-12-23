@@ -6,8 +6,14 @@ Para ello:
 
 2. Utilizar el [servicio de restaurantes](https://zaragoza-sedeelectronica.github.io/rest/queries/):
 
-(Pej: https://www.zaragoza.es/sede/servicio/restaurante.geojson?srsname=wgs84&rows=10) y visualizar la lista como el ejemplo que hicimos.
+*(Pej: https://www.zaragoza.es/sede/servicio/restaurante.geojson?srsname=wgs84&rows=10) y visualizar la lista como el ejemplo que hicimos.*
 
+
+### No olvidar hacer un 
+
+```
+npm install
+```
 
 * Instalar Ionic Cordova
 
@@ -20,4 +26,11 @@ npm install -g ionic cordova
 
 * Openlayers 5.3.0
 
-* [ ] Paquete geolocalización
+* Plugin geolocalización
+
+````
+ionic cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="To locate you"
+
+npm install --save @ionic-native/geolocation
+```
+
