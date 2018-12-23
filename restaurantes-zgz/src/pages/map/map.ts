@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
+import { MapDistance } from '../map/mapDistance';
+
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import XYZ from 'ol/source/XYZ';
@@ -14,7 +16,8 @@ import VectorSource from 'ol/source/Vector';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
 
-import { transform } from 'ol/proj';
+import { boundingExtent } from 'ol/extent';
+import { transform, transformExtent } from 'ol/proj';
 import { Restaurant } from '../../providers/restaurant-info/model/restaurant';
 import { HttpClient } from '@angular/common/http';
 import { Location } from '../../providers/restaurant-info/model/location';
@@ -49,6 +52,8 @@ export class MapPage {
   vectorDraw: VectorLayer;
   vectorSourceDraw: VectorSource;
 
+  mapDistance: MapDistance;
+
   distancia: number = 0;
   ubicacion: number[] = [];
   locRestaurante: number[] = [];
@@ -64,6 +69,8 @@ export class MapPage {
   iconoCasa: string;
 
   ngOnInit() {
+
+    this.mapDistance = new MapDistance();
 
     this.zoom = 13;
     //Default pointer position
@@ -96,11 +103,12 @@ export class MapPage {
     }
   }
 
-  dibujarRestaurante(restaurante: Restaurant) {
-    this.locRestaurante = transform(restaurante.geometry.coordinates, 'EPSG:4326', 'EPSG:3857')
+  dibujarRestaurante(restaurante: Restaurant): void {
+    this.locRestaurante = transform(restaurante.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
 
     let view: View = this.map.getView();
-    view.setZoom(16);
+    this.zoom = 16;
+    view.setZoom(this.zoom);
     view.setCenter(this.locRestaurante);
 
     let estiloPointer = new Style({
@@ -126,12 +134,13 @@ export class MapPage {
     feature.setStyle(estiloPointer);
     this.map.addLayer(vectorLayer);
   }
+
   dibujarUbicacion(coords: number[]) {
-    let ubcCoords = transform(coords, 'EPSG:4326', 'EPSG:3857');
 
     let view: View = this.map.getView();
-    view.setZoom(18);
-    view.setCenter(ubcCoords);
+    this.zoom = 18;
+    view.setZoom(this.zoom);
+    view.setCenter(coords);
 
     let estiloPointer = new Style({
       image: new Icon({
@@ -144,7 +153,7 @@ export class MapPage {
     });
 
     let feature = new Feature({
-      geometry: new Point(ubcCoords)
+      geometry: new Point(coords)
     });
 
     let vectorLayer = new VectorLayer({
@@ -157,17 +166,43 @@ export class MapPage {
     this.map.addLayer(vectorLayer);
   }
 
-  localizarPorAPI() {
-
-
+  localizarPorIP(): void {
     this.ubicacion = [];
     this.http.get<Location>('https://ipapi.co/json')
       .subscribe(res => {
         this.ubicacion = [res.longitude, res.latitude];
         if (this.ubicacion.length > 0) {
+          this.ubicacion = transform(this.ubicacion, 'EPSG:4326', 'EPSG:3857');
           this.dibujarUbicacion(this.ubicacion);
+
+          let view = this.map.getView();
+          //TODO (Que haga zoom y que se vean los dos puntos)
+          view.fit(transformExtent(boundingExtent([...this.ubicacion, ...this.locRestaurante]), 'EPSG:4326', 'EPSG:3857'), this.map.getSize());
+
+          // view.setCenter(this.mapDistance.midCoords(this.ubicacion, this.locRestaurante));
+          // let distancia = this.cacularDistancia(this.ubicacion, this.locRestaurante);
+          // console.log(distancia);
+          // if (distancia < 0.5) {
+          //   distancia *= 100;
+          //   this.zoom--;
+          // } else {
+          //   console.log(distancia);
+          //   distancia = ~~distancia;
+          //   this.zoom -= (distancia + 1);
+          //   console.log(distancia);
+
+          // }
+
+          console.log(this.zoom);
+          view.setZoom(this.zoom);
         }
       });
+  }
+
+  cacularDistancia(coords1: number[], coords2: number[]): number {
+    coords1 = transform(coords1, 'EPSG:3857', 'EPSG:4326');
+    coords2 = transform(coords2, 'EPSG:3857', 'EPSG:4326');
+    return this.mapDistance.distance2Points(coords1, coords2);
   }
   //TODO https://stackoverflow.com/questions/10109620/openlayers-how-to-calculate-distance-between-two-points
 }
