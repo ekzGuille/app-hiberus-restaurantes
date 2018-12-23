@@ -13,7 +13,7 @@
 
 <ion-content padding>
   <ion-item class="selectorTenedor">
-    <ion-label>Busca por tenedores</ion-label>
+    <ion-label>Filtrar por tenedores</ion-label>
     <ion-select [(ngModel)]="resCondicion.numTenedores" #tenedor (ionChange)="cargarSegunTenedores(tenedor.value)">
       <ion-option value="0">0</ion-option>
       <ion-option value="1">1</ion-option>
@@ -62,16 +62,17 @@
         </ion-card-content>
         <ion-grid class="botones" full padding>
           <ion-row>
-            <ion-col col-6>
+            <ion-col col-12>
               <button start ion-button round small (click)="mostrarDatos(restaurante)">
                 Más información
               </button>
             </ion-col>
-            <ion-col col-6>
+
+            <!-- <ion-col col-6>
               <button end ion-button round small (click)="mostrarMapa(restaurante)">
                 Mostrar en mapa
               </button>
-            </ion-col>
+            </ion-col> -->
           </ion-row>
         </ion-grid>
       </div>
@@ -106,11 +107,11 @@
               </button>
             </ion-col>
             <ion-col col-6></ion-col>
-            <ion-col col-3>
+            <!-- <ion-col col-3>
               <button end ion-button round small (click)="mostrarMapa(restaurante)">
                 Mostrar en mapa
               </button>
-            </ion-col>
+            </ion-col> -->
           </ion-row>
         </ion-grid>
       </div>

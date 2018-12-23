@@ -5,7 +5,9 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
+  <ion-navbar>
+    <ion-title>{{restaurante.title}}</ion-title>
+  </ion-navbar>
 </ion-header>
 <ion-content padding>
   <ion-card>
@@ -49,10 +51,17 @@
             </p>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <!-- <ion-col col-3>
+            <button end ion-button round small (click)="mostrarMapa(restaurante)">
+              Mostrar en mapa
+            </button>
+          </ion-col> -->
+        </ion-row>
       </ion-grid>
-      <div class="mapContainer">
+      <!-- <div class="mapContainer">
         <page-map></page-map>
-      </div>
+      </div> -->
     </ion-card-content>
   </ion-card>
 </ion-content>

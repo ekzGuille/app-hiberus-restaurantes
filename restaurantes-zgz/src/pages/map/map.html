@@ -6,15 +6,41 @@
 -->
 <ion-header>
   <ion-navbar>
-    <ion-title *ngIf="restaurante">
-      {{restaurante[0].title}}
-    </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <!-- <ion-content padding> -->
-  <div id="map" class="map">
+  <div id="map" class="map"></div>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content">
+      <p class="titulo">
+        {{infoRestaurante.title}}
+      </p>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-12>
+            <p class="direccion">{{infoRestaurante.streetAddress}}, {{infoRestaurante.addressLocality}}</p>
+            <!-- TODO Enviar email -->
+            <p *ngIf="infoRestaurante.url">
+              <ion-icon name="compass"></ion-icon> <a href="{{infoRestaurante.url}}">{{infoRestaurante.url}}
+              </a>
+            </p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col *ngIf="infoRestaurante.tenedores" col-12 class="tenedorInfo">
+            <p class="tenedores">{{infoRestaurante.tenedores}}
+              <ion-icon name="restaurant"></ion-icon>
+            </p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <button end ion-button full round (click)="mostrarFicha(infoRestaurante)">
+        Mostrar ficha completa
+      </button>
+    </div>
   </div>
   <button round class="btnLocalizar" (click)="localizarUsuario()">
     <ion-icon name="locate"></ion-icon>

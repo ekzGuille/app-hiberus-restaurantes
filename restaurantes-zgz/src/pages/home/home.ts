@@ -24,7 +24,6 @@ export class HomePage {
   urlWebZgz: string;
   imagenRGenerica: string;
   iconoRGenerico: string;
-  iconoTenedor: string;
   cantidadTenedores: number;
   resCondicion: {
     isVacio: boolean,
@@ -38,7 +37,6 @@ export class HomePage {
     this.urlWebZgz = 'https://www.zaragoza.es';
     this.imagenRGenerica = 'https://image.freepik.com/foto-gratis/fondo-borroso-difuminar-frente-restaurante-luz-bokeh_7190-925.jpg'
     this.iconoRGenerico = 'https://furtaev.ru/preview/restaurant_map_pointer_small.png';
-    this.iconoTenedor = 'http://www.lafondabenalmadena.es/img/eltenedor_icon.png';
     this.resCondicion = {
       isVacio: false,
       numTenedores: -1
