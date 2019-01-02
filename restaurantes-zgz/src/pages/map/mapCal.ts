@@ -24,18 +24,22 @@ export class MapCal {
    * @returns number
    */
   distance2Points(coords1: number[], coords2: number[]): number {
-
-    let lat1 = coords1[1];
-    let lon1 = coords1[0];
-    let lat2 = coords2[1];
-    let lon2 = coords2[0];
+    
+    let lat1 = this.toRad(coords1[1]);
+    let lon1 = this.toRad(coords1[0]);
+    let lat2 = this.toRad(coords2[1]);
+    let lon2 = this.toRad(coords2[0]);
 
     let R = 6371;
-    let dLon = this.toRad(lon2 - lon1);
-    lat1 = this.toRad(lat1);
-    lat2 = this.toRad(lat2);
-    let d = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(dLon)) * R;
-    return d;
+    let dLat = (lat2 - lat1);
+    let dLon = (lon2 - lon1);
+
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1) * Math.cos(lat2) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
   }
 
   /**
